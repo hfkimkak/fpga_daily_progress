@@ -44,4 +44,4 @@ begin
     y   <= and_result;      -- Normal output
     y_n <= not and_result;  -- Complementary (inverted) output
     
-end architecture behavioral;
+end behavioral; 
