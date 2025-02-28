@@ -1,19 +1,19 @@
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.std_logic_1164.all;
 
--- Entity declaration for AND gate
+-- Entity declaration for and gate
 entity and_gate is
-    Port ( 
-        A : in  STD_LOGIC;    -- First input
-        B : in  STD_LOGIC;    -- Second input
-        Y : out STD_LOGIC     -- Output
+    port ( 
+        a : in  std_logic;    -- First input
+        b : in  std_logic;    -- Second input
+        y : out std_logic     -- Output
     );
 end and_gate;
 
 -- Architecture declaration
-architecture Behavioral of and_gate is
+architecture behavioral of and_gate is
 begin
     -- Concurrent signal assignment
-    Y <= A and B;
+    y <= a and b;
     
-end Behavioral; 
+end behavioral; 
