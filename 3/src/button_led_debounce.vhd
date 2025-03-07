@@ -7,31 +7,36 @@
 --                - Features edge detection to trigger on button press only
 --                - Controls LED patterns that change with each button press
 --                - Supports multiple LED patterns in sequence:
---                  * Individual LEDs lighting up in sequence
---                  * All LEDs on
---                  * All LEDs off
+--                  * Single LED sequence
+--                  * All LEDs on/off
+--                  * Shift left/right patterns
+--                  * Bounce (ping-pong) effect
+--                  * Random patterns
 --                - Provides generic parameters for easy customization:
 --                  * Clock frequency
 --                  * Debounce time
 --                  * Number of LEDs
+--                  * Effect speed
 --                - Board-agnostic design that can be used with various FPGA boards
 ---------------------------------------------------------------------------------------------------
 
 library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
+    use ieee.math_real.all;  -- For random number generation
 
 entity button_led_debounce is
     generic (
-        CLK_FREQ_HZ_g : integer := 100_000_000; --! Clock frequency in Hz (default 100 MHz)
-        DEBOUNCE_MS_g : integer := 20;          --! Debounce period in milliseconds (default 20ms)
-        NUM_LEDS_g    : integer := 4            --! Number of LEDs to control (default 4 LEDs)
+        CLK_FREQ_HZ_g    : integer := 100_000_000; -- Clock frequency in Hz (default 100 MHz)
+        DEBOUNCE_MS_g    : integer := 20;          -- Debounce period in milliseconds (default 20ms)
+        NUM_LEDS_g       : integer := 4;           -- Number of LEDs to control (default 4 LEDs)
+        EFFECT_SPEED_MS_g: integer := 100          -- Effect speed in milliseconds
     );
     port (
-        clk_i     : in  std_logic;                                --! System clock
-        reset_n_i : in  std_logic;                                --! Active low reset
-        button_i  : in  std_logic;                                --! Button input
-        leds_o    : out std_logic_vector(NUM_LEDS_g-1 downto 0)   --! LED outputs
+        clk_i     : in  std_logic;                               -- System clock
+        reset_n_i : in  std_logic;                               -- Active low reset
+        button_i  : in  std_logic;                               -- Button input
+        leds_o    : out std_logic_vector(NUM_LEDS_g-1 downto 0)  -- LED outputs
     );
 end entity button_led_debounce;
 
@@ -45,11 +50,22 @@ architecture rtl of button_led_debounce is
     -- TYPE DECLERATIONS
     --------------------------------------------------------------------------------------------------------------------
 
+    -- Type declarations
+    type effect_mode_t is (
+        SINGLE_LED,     -- Single LED mode
+        ALL_LEDS,       -- All LEDs
+        SHIFT_RIGHT,    -- Right shift effect
+        SHIFT_LEFT,     -- Left shift effect
+        BOUNCE,         -- Ping-pong effect
+        RANDOM         -- Random blinking
+    );
+
     --------------------------------------------------------------------------------------------------------------------
     -- CONSTANT DECLERATIONS
     --------------------------------------------------------------------------------------------------------------------
 
-    constant DEBOUNCE_CYCLES_c : integer := (CLK_FREQ_HZ_g / 1000) * DEBOUNCE_MS_g; --! Number of clock cycles for debounce
+    constant DEBOUNCE_CYCLES_c  : integer := (CLK_FREQ_HZ_g / 1000) * DEBOUNCE_MS_g;
+    constant EFFECT_CYCLES_c    : integer := (CLK_FREQ_HZ_g / 1000) * EFFECT_SPEED_MS_g;
 
     --------------------------------------------------------------------------------------------------------------------
     -- SIGNAL DECLERATIONS
@@ -62,12 +78,27 @@ architecture rtl of button_led_debounce is
     signal debounce_counter_s  : integer range 0 to DEBOUNCE_CYCLES_c := 0; --! Counter for debounce
     
     signal led_pattern_s       : std_logic_vector(NUM_LEDS_g-1 downto 0) := (others => '0'); --! Current LED pattern
-    signal led_count_s         : unsigned(NUM_LEDS_g-1 downto 0) := (others => '0'); --! Counter for LED patterns
+    signal current_mode_s      : effect_mode_t := SINGLE_LED;
+    signal effect_counter_s    : integer range 0 to EFFECT_CYCLES_c := 0;
+    signal direction_right_s   : boolean := true;  -- For bounce effect
+    
     signal button_pressed_s    : std_logic := '0';  --! Button press detected signal
 
     --------------------------------------------------------------------------------------------------------------------
     -- ATTRIBUTE DECLERATIONS
     --------------------------------------------------------------------------------------------------------------------
+
+    -- Function to generate random LED pattern
+    function random_pattern(seed: integer) return std_logic_vector is
+        variable rand_temp : integer;
+        variable result   : std_logic_vector(NUM_LEDS_g-1 downto 0);
+    begin
+        rand_temp := (seed * 16807) mod 2147483647;  -- Simple PRNG
+        for i in 0 to NUM_LEDS_g-1 loop
+            result(i) := std_logic(to_unsigned(rand_temp, 32)(i mod 32));
+        end loop;
+        return result;
+    end function;
 
 begin
 
@@ -139,42 +170,71 @@ begin
     -- LED_CONTROL_PROC : LED pattern control process
     --------------------------------------------------------------------------------------------------------------------
     led_control_proc : process (clk_i, reset_n_i) is
+        variable effect_step : integer := 0;
     begin
         if (reset_n_i = '0') then
             -- Reset LED pattern
-            led_count_s <= (others => '0');
-            led_pattern_s <= (others => '0');
+            current_mode_s <= SINGLE_LED;
+            led_pattern_s <= (0 => '1', others => '0');
+            effect_counter_s <= 0;
+            direction_right_s <= true;
         else
             if (rising_edge(clk_i)) then
-                if (button_pressed_s = '1') then
-                    -- Increment LED counter on button press
-                    led_count_s <= led_count_s + 1;
-                    
-                    -- Update LED pattern based on counter
-                    case to_integer(led_count_s) is
-                        when 0 =>
-                            -- First pattern: Only first LED on
-                            led_pattern_s <= (0 => '1', others => '0');
-                        when 1 =>
-                            -- Second pattern: Only second LED on
-                            led_pattern_s <= (1 => '1', others => '0');
-                        when 2 =>
-                            -- Third pattern: Only third LED on
-                            led_pattern_s <= (2 => '1', others => '0');
-                        when 3 =>
-                            -- Fourth pattern: Only fourth LED on
-                            led_pattern_s <= (3 => '1', others => '0');
-                        when 4 =>
-                            -- Fifth pattern: All LEDs on
-                            led_pattern_s <= (others => '1');
-                        when 5 =>
-                            -- Sixth pattern: All LEDs off
-                            led_pattern_s <= (others => '0');
-                        when others =>
-                            -- Reset counter and start over
-                            led_count_s <= (others => '0');
-                            led_pattern_s <= (0 => '1', others => '0');
+                -- Mode selection on button press
+                if button_pressed_s = '1' then
+                    case current_mode_s is
+                        when SINGLE_LED  => current_mode_s <= ALL_LEDS;
+                        when ALL_LEDS    => current_mode_s <= SHIFT_RIGHT;
+                        when SHIFT_RIGHT => current_mode_s <= SHIFT_LEFT;
+                        when SHIFT_LEFT  => current_mode_s <= BOUNCE;
+                        when BOUNCE      => current_mode_s <= RANDOM;
+                        when RANDOM      => current_mode_s <= SINGLE_LED;
                     end case;
+                    effect_step := 0;
+                end if;
+
+                -- Effect timing control
+                if effect_counter_s = EFFECT_CYCLES_c - 1 then
+                    effect_counter_s <= 0;
+                    
+                    -- Effect patterns
+                    case current_mode_s is
+                        when SINGLE_LED =>
+                            led_pattern_s <= (effect_step => '1', others => '0');
+                            effect_step := (effect_step + 1) mod NUM_LEDS_g;
+                            
+                        when ALL_LEDS =>
+                            led_pattern_s <= (others => '1');
+                            
+                        when SHIFT_RIGHT =>
+                            led_pattern_s <= '0' & led_pattern_s(NUM_LEDS_g-1 downto 1);
+                            
+                        when SHIFT_LEFT =>
+                            led_pattern_s <= led_pattern_s(NUM_LEDS_g-2 downto 0) & '0';
+                            
+                        when BOUNCE =>
+                            if direction_right_s then
+                                if led_pattern_s(NUM_LEDS_g-1) = '1' then
+                                    direction_right_s <= false;
+                                    led_pattern_s <= '0' & led_pattern_s(NUM_LEDS_g-1 downto 1);
+                                else
+                                    led_pattern_s <= '0' & led_pattern_s(NUM_LEDS_g-1 downto 1);
+                                end if;
+                            else
+                                if led_pattern_s(0) = '1' then
+                                    direction_right_s <= true;
+                                    led_pattern_s <= led_pattern_s(NUM_LEDS_g-2 downto 0) & '0';
+                                else
+                                    led_pattern_s <= led_pattern_s(NUM_LEDS_g-2 downto 0) & '0';
+                                end if;
+                            end if;
+                            
+                        when RANDOM =>
+                            led_pattern_s <= random_pattern(effect_step);
+                            effect_step := effect_step + 1;
+                    end case;
+                else
+                    effect_counter_s <= effect_counter_s + 1;
                 end if;
             end if;
         end if;
