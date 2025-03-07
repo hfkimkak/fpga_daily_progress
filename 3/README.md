@@ -20,28 +20,33 @@ The design consists of three main components:
 
 2. **Edge Detection**: Detects the rising edge of the debounced button signal to trigger LED pattern changes only once per button press.
 
-3. **LED Control**: Cycles through different LED patterns each time the button is pressed.
+3. **LED Control**: Implements various LED patterns and effects that change with each button press.
 
 ## Features
 
 - Configurable debounce time (default: 20ms)
 - Configurable number of LEDs (default: 4)
-- Adjustable clock frequency to match different boards
-- Multiple LED patterns that cycle with each button press
+- Adjustable effect speed
 - Active-low reset input
 - Board-agnostic design
+- Multiple LED effects:
+  * Single LED sequence
+  * All LEDs on/off
+  * Shift left/right patterns
+  * Bounce (ping-pong) effect
+  * Random patterns
 
-## LED Patterns
+## LED Effect Modes
 
-The design cycles through the following LED patterns with each button press:
+The design cycles through the following LED effects with each button press:
 
-1. Only first LED on
-2. Only second LED on
-3. Only third LED on
-4. Only fourth LED on
-5. All LEDs on
-6. All LEDs off
-7. Back to pattern 1
+1. **Single LED Mode**: One LED moves sequentially through all positions
+2. **All LEDs Mode**: All LEDs turn on simultaneously
+3. **Shift Right**: LED pattern shifts right continuously
+4. **Shift Left**: LED pattern shifts left continuously
+5. **Bounce Mode**: LED pattern bounces back and forth (ping-pong effect)
+6. **Random Mode**: LEDs display random patterns
+7. Back to Single LED Mode
 
 ## Implementation Details
 
@@ -62,9 +67,11 @@ The edge detection circuit:
 ### LED Control
 
 The LED control circuit:
-- Maintains a counter to track the current LED pattern
-- Updates the LED pattern based on button presses
-- Resets to the initial pattern after cycling through all patterns
+- Implements state machine for effect mode selection
+- Manages timing for each effect pattern
+- Includes random pattern generation
+- Handles direction control for bounce effect
+- Provides smooth transitions between patterns
 
 ## Usage
 
@@ -72,28 +79,40 @@ The LED control circuit:
    - `CLK_FREQ_HZ_g`: Clock frequency of your board
    - `DEBOUNCE_MS_g`: Desired debounce period in milliseconds
    - `NUM_LEDS_g`: Number of LEDs to control
-2. Synthesize and implement the design using Vivado or another FPGA development tool.
+   - `EFFECT_SPEED_MS_g`: Speed of LED effects
+
+2. Synthesize and implement the design using your preferred FPGA development tool.
 3. Program your FPGA board with the generated bitstream.
-4. Press the button to cycle through LED patterns.
+4. Press the button to cycle through LED effects.
 
 ## Simulation
 
-The testbench includes:
-- Simulation of button bouncing to test the debounce circuit
-- Multiple button presses to cycle through LED patterns
-- Reset functionality testing
-- Detailed reporting of test stages
+The testbench includes comprehensive testing of all features:
+- Simulation of button bouncing
+- Testing of all LED effect modes
+- Reset functionality verification
+- Detailed test reporting
+- Automated pattern verification
 
 To run the simulation:
-1. Open the project in Vivado
+1. Open the project in your FPGA development tool
 2. Add the source files and testbench
 3. Run the simulation
-4. Observe the LED patterns changing with button presses
+4. Observe the LED patterns and test reports
 
 ## Customization
 
 The design can be easily customized by:
-- Modifying the generic parameters in the VHDL code
-- Changing the LED patterns in the `led_control_proc` process
-- Adjusting the debounce threshold for different button characteristics
-- Adding more complex LED patterns or behaviors 
+- Modifying the generic parameters
+- Adding new LED effect patterns
+- Adjusting effect timing
+- Changing the effect sequence
+- Modifying the random pattern generation
+
+## Documentation
+
+Detailed documentation is available in the `docs/` directory:
+- Design documentation
+- Test results
+- Timing diagrams
+- Implementation guides 
