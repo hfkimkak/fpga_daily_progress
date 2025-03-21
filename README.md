@@ -1,50 +1,66 @@
-# FPGA Learning Path
+# FPGA Zero to Hero
 
-This repository contains a structured learning path for FPGA development using VHDL. The learning path is organized into 7 progressive sprints, each building on the knowledge and skills from previous ones.
+This project offers a structured learning path for FPGA development using VHDL, following a "Zero to Hero" approach. Projects are organized in steps, each building on the knowledge and skills from previous ones.
 
 ## Project Structure
 
-This repository is organized into numbered directories (1-7), each representing a sprint in the learning path:
+This repository is organized into numbered directories, each representing a step in the learning path:
 
-- `/1` - Development Environment Setup & Hello World
-- `/2` - Basic Logic Gates
-- `/3` - Button-Controlled LED
-- `/4` - 7-Segment Display Controller
-- `/5` - PWM LED Brightness Control
-- `/6` - 4-Bit Binary Counter (Upcoming)
-- `/7` - Shift Register LED Animation (Upcoming)
+### Sprint 1: FPGA Fundamentals
+- `/1` - **Step 1:** FPGA Environment and LED Control
+- `/2` - **Step 2:** Logic Gates
+- `/3` - **Step 3:** Button-Controlled LED
+- `/4` - **Step 4:** 7-Segment Display
+- `/5` - **Step 5:** PWM LED Brightness Control
+- `/6` - **Step 6:** 4-Bit Binary Counter
+- `/7` - **Step 7:** Shift Register LED Animation
+
+### Sprint 2: Advanced FPGA (Coming Soon)
+- Coming soon
 
 The `/vhdl_style` directory contains the style guidelines followed throughout all projects.
 
 ## Learning Roadmap
 
-### Sprint 1: Development Environment Setup & Hello World
+### Sprint 1: FPGA Fundamentals
+
+#### Step 1: FPGA Environment and LED Control
 - Setting up FPGA development environment (Vivado/Quartus)
-- Implementing a basic LED blinking project ("Hello World")
+- Creating a "Hello World" project (LED blinking)
+- Learning basic VHDL concepts
 
-### Sprint 2: Basic Logic Gates
-- Designing and simulating fundamental logic gates (AND, OR, XOR)
-- Learning about Boolean algebra and digital logic fundamentals
+#### Step 2: Logic Gates
+- Designing and simulating basic logic gates (AND, OR, XOR)
+- Learning Boolean algebra and digital logic fundamentals
+- Combinational circuit design
 
-### Sprint 3: Button-Controlled LED
+#### Step 3: Button-Controlled LED
 - Implementing button input handling with debounce circuitry
 - Creating a simple user interface with buttons and LEDs
+- Understanding input/output control
 
-### Sprint 4: 7-Segment Display Controller
+#### Step 4: 7-Segment Display
 - Building a 7-segment display controller to display decimal numbers (0-9)
-- Learning about display interfaces and decimal to 7-segment encoding
+- Learning about display interfaces and decimal-to-7-segment encoding
+- Display unit control
 
-### Sprint 5: PWM LED Brightness Control
+#### Step 5: PWM LED Brightness Control
 - Implementing pulse width modulation for LED brightness control
 - Understanding timing, counters, and duty cycle concepts
+- Using digital techniques for analog-like behaviors
 
-### Sprint 6: 4-Bit Binary Counter
-- Creating a binary counter with display output
+#### Step 6: 4-Bit Binary Counter
+- Creating a 4-bit binary counter (0-15)
 - Learning about sequential logic and state management
+- Up/down counting, reset, and enable control
 
-### Sprint 7: Shift Register LED Animation
+#### Step 7: Shift Register LED Animation
 - Building shift registers for creating LED animations
 - Understanding sequential data transfer and LED pattern generation
+- More complex digital system control
+
+### Sprint 2: Advanced FPGA (Coming Soon)
+This sprint will cover more advanced FPGA topics and will be added soon.
 
 ## Code Style
 
@@ -56,7 +72,7 @@ Halil Furkan KIMKAK
 
 ## Getting Started
 
-Each sprint directory contains its own README with specific instructions for that project. Start from Sprint 1 and progress sequentially for the best learning experience.
+Each step directory contains its own README with specific instructions for that project. Start from Step 1 and progress sequentially for the best learning experience.
 
 ## Requirements
 
