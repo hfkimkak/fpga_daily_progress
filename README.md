@@ -24,6 +24,26 @@ This repository is organized into numbered directories, each representing a step
 - `/13` - **Step 6:** Analog Signal Reading with ADC
 - `/14` - **Step 7:** FIFO Memory Design and Testing
 
+### Sprint 3: Advanced Projects and Optimization
+- `/15` - **Step 1:** PID Controller for DC Motor Speed Control
+- `/16` - **Step 2:** Moving Ball Animation on VGA Display
+- `/17` - **Step 3:** Sound Signal Generation (MIDI/Note-based)
+- `/18` - **Step 4:** Embedded RISC-V Core Setup (e.g., PicoRV32)
+- `/19` - **Step 5:** Image Processing (e.g., Grayscale Filter)
+- `/20` - **Step 6:** Multi-Clock Domain Design (Clock Domain Crossing)
+- `/21` - **Step 7:** High-Speed Data Read/Write with DDR Memory Controller
+
+### Sprint 4: Integration and Final Project
+- `/22` - **Step 1:** Custom Peripheral Design for Nios II/PicoRV32 Processor
+- `/23` - **Step 2:** IoT Application with Bluetooth/WiFi Module
+- `/24` - **Step 3:** Digital Clock with Real-Time Clock (RTC)
+- `/25` - **Step 4:** Signal Generator on FPGA (DDS-based)
+- `/26` - **Step 5:** Simple Object Recognition with CNN (MNIST Dataset)
+- `/27` - **Step 6:** Retro Game Console on FPGA (e.g., Pong)
+- `/28` - **Step 7:** Resource Usage Optimization (LUT, FF Reduction)
+- `/29` - **Step 8:** Timing Analysis and Critical Path Optimization
+- `/30` - **Step 9:** Final Project: To Be Determined
+
 The `/vhdl_style` directory contains the style guidelines followed throughout all projects.
 
 ## Learning Roadmap
@@ -108,6 +128,106 @@ The `/vhdl_style` directory contains the style guidelines followed throughout al
 - Implementing write and read pointers management
 - Handling full and empty conditions
 - Testing FIFO operation and performance
+
+### Sprint 3: Advanced Projects and Optimization
+
+#### Step 1: PID Controller for DC Motor Speed Control
+- Understanding PID control theory and implementation
+- Interfacing with motor drivers and encoders
+- Creating feedback loops for speed regulation
+- Tuning PID parameters for optimal performance
+
+#### Step 2: Moving Ball Animation on VGA Display
+- Implementing complex graphics on VGA display
+- Creating sprite movement and collision detection
+- Managing frame buffers and animation timing
+- Developing basic game physics (gravity, bounce)
+
+#### Step 3: Sound Signal Generation (MIDI/Note-based)
+- Creating digital waveform generators (sine, square, triangle)
+- Implementing note frequency calculation and timing
+- Developing audio output interfaces (PWM or DAC)
+- Building a simple music sequencer or tone generator
+
+#### Step 4: Embedded RISC-V Core Setup
+- Integrating an open-source RISC-V core (e.g., PicoRV32)
+- Setting up instruction and data memory
+- Implementing basic I/O for the processor
+- Writing and running simple programs on the core
+
+#### Step 5: Image Processing (Grayscale Filter)
+- Working with image data and buffers
+- Implementing grayscale conversion algorithms
+- Creating pipeline architectures for efficient processing
+- Testing with real image data
+
+#### Step 6: Multi-Clock Domain Design
+- Understanding clock domain crossing challenges
+- Implementing synchronizers and FIFOs for safe data transfer
+- Analyzing and resolving metastability issues
+- Creating robust multi-clock systems
+
+#### Step 7: High-Speed Data with DDR Memory Controller
+- Interfacing with DDR memory
+- Implementing memory controllers with timing constraints
+- Managing read/write operations at high frequencies
+- Testing memory bandwidth and access patterns
+
+### Sprint 4: Integration and Final Project
+
+#### Step 1: Custom Peripheral Design for Processors
+- Creating memory-mapped peripherals for soft processors
+- Implementing bus interfaces (Avalon, AXI, Wishbone)
+- Developing interrupt handling mechanisms
+- Testing peripheral functionality with software
+
+#### Step 2: IoT Application with Bluetooth/WiFi Module
+- Interfacing with wireless communication modules
+- Implementing communication protocols (AT commands, SPI/UART bridges)
+- Creating data acquisition and transmission systems
+- Building a complete IoT sensor node
+
+#### Step 3: Digital Clock with Real-Time Clock
+- Interfacing with RTC chips for accurate timekeeping
+- Creating time display modules with 7-segment or LCD
+- Implementing time setting and alarm functions
+- Adding battery backup considerations
+
+#### Step 4: Signal Generator on FPGA (DDS-based)
+- Implementing Direct Digital Synthesis techniques
+- Creating high-precision frequency generators
+- Developing configurable waveform types and parameters
+- Building a complete bench instrument replacement
+
+#### Step 5: Simple Object Recognition with CNN
+- Implementing basic convolutional neural networks
+- Working with the MNIST dataset for digit recognition
+- Creating inference acceleration architectures
+- Optimizing neural network operations for FPGA
+
+#### Step 6: Retro Game Console on FPGA
+- Building classic games like Pong or Space Invaders
+- Implementing game controllers and interfaces
+- Creating sprite-based graphics engines
+- Developing game logic and scoring systems
+
+#### Step 7: Resource Usage Optimization
+- Analyzing and reducing LUT and flip-flop usage
+- Implementing resource sharing techniques
+- Using block RAM and DSP slices efficiently
+- Applying FPGA-specific optimization strategies
+
+#### Step 8: Timing Analysis and Critical Path Optimization
+- Understanding static timing analysis
+- Identifying and resolving timing violations
+- Implementing pipelining and retiming
+- Applying constraints for timing closure
+
+#### Step 9: Final Project
+- Comprehensive project combining multiple skills
+- Complete system design from requirements to implementation
+- Documentation and testing methodologies
+- Performance analysis and optimization
 
 ## Code Style
 
