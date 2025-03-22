@@ -13,8 +13,6 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
 
--- < Add More User Library, If required. >
-
 entity seven_segment_display_tb is
     -- Testbench has no ports
 end entity seven_segment_display_tb;
@@ -100,10 +98,10 @@ begin
             COMMON_ANODE_g => true
         )
         port map (
-            clk_i      => clk_s,
-            reset_n_i  => reset_n_s,
-            digit_i    => digit_s,
-            segments_o => segments_ca_s
+            clk_i      => clk_s, --! Clock signal
+            reset_n_i  => reset_n_s, --! Reset signal
+            digit_i    => digit_s, --! Digit input
+            segments_o => segments_ca_s --! Common anode output
         );
 
     --! DUT instantiation - Common Cathode
@@ -112,10 +110,10 @@ begin
             COMMON_ANODE_g => false
         )
         port map (
-            clk_i      => clk_s,
-            reset_n_i  => reset_n_s,
-            digit_i    => digit_s,
-            segments_o => segments_cc_s
+            clk_i      => clk_s, --! Clock signal
+            reset_n_i  => reset_n_s, --! Reset signal
+            digit_i    => digit_s, --! Digit input
+            segments_o => segments_cc_s --! Common cathode output
         );
 
     --------------------------------------------------------------------------------------------------------------------
@@ -128,10 +126,10 @@ begin
     clk_gen_proc : process is
     begin
         while not sim_done_s loop
-            clk_s <= '0';
-            wait for CLK_PERIOD_c/2;
-            clk_s <= '1';
-            wait for CLK_PERIOD_c/2;
+            clk_s <= '0'; --! Clock signal
+            wait for CLK_PERIOD_c/2; --! Wait for half period
+            clk_s <= '1'; --! Clock signal
+            wait for CLK_PERIOD_c/2; --! Wait for half period
         end loop;
         wait;
     end process clk_gen_proc;
@@ -142,17 +140,17 @@ begin
     stim_proc : process is
     begin
         -- Initial reset
-        reset_n_s <= '0';
-        wait for 5 * CLK_PERIOD_c;
-        reset_n_s <= '1';
-        wait for 2 * CLK_PERIOD_c;
+        reset_n_s <= '0'; --! Reset signal
+        wait for 5 * CLK_PERIOD_c; --! Wait for 5 clock periods
+        reset_n_s <= '1'; --! Reset signal
+        wait for 2 * CLK_PERIOD_c; --! Wait for 2 clock periods
 
         report "Starting Seven-Segment Display Tests...";
 
         -- Test all digits from 0 to F
         for i in 0 to 15 loop
-            digit_s <= std_logic_vector(to_unsigned(i, 4));
-            wait for 5 * CLK_PERIOD_c;
+            digit_s <= std_logic_vector(to_unsigned(i, 4)); --! Digit input
+            wait for 5 * CLK_PERIOD_c; --! Wait for 5 clock periods
             
             -- Verify common anode output (active low)
             assert segments_ca_s = not EXPECTED_PATTERNS_c(i)
@@ -168,34 +166,34 @@ begin
                        ", Got: " & to_string(segments_cc_s)
                 severity error;
                 
-            report "Digit " & integer'image(i) & " tested successfully";
+            report "Digit " & integer'image(i) & " tested successfully"; --! Report successful test
         end loop;
 
         -- Test reset functionality
-        report "Testing reset functionality...";
-        reset_n_s <= '0';
-        wait for 3 * CLK_PERIOD_c;
+        report "Testing reset functionality..."; --! Report reset functionality test
+        reset_n_s <= '0'; --! Reset signal
+        wait for 3 * CLK_PERIOD_c; --! Wait for 3 clock periods
         
         -- Verify reset state (should display '0')
-        assert segments_ca_s = not EXPECTED_PATTERNS_c(0)
+        assert segments_ca_s = not EXPECTED_PATTERNS_c(0) --! Common anode reset test
             report "Common Anode Reset Test Failed. Expected: " & 
                    to_string(not EXPECTED_PATTERNS_c(0)) &
                    ", Got: " & to_string(segments_ca_s)
             severity error;
             
-        assert segments_cc_s = EXPECTED_PATTERNS_c(0)
+        assert segments_cc_s = EXPECTED_PATTERNS_c(0) --! Common cathode reset test
             report "Common Cathode Reset Test Failed. Expected: " & 
                    to_string(EXPECTED_PATTERNS_c(0)) &
                    ", Got: " & to_string(segments_cc_s)
             severity error;
             
-        reset_n_s <= '1';
-        wait for 2 * CLK_PERIOD_c;
+        reset_n_s <= '1'; --! Reset signal
+        wait for 2 * CLK_PERIOD_c; --! Wait for 2 clock periods
 
         -- End simulation
-        report "All tests completed successfully!";
-        sim_done_s <= true;
-        wait;
+        report "All tests completed successfully!"; --! Report all tests completed successfully
+        sim_done_s <= true; --! Simulation done flag
+        wait; --! Wait for simulation to finish
     end process stim_proc;
 
     --------------------------------------------------------------------------------------------------------------------
@@ -203,13 +201,13 @@ begin
     --------------------------------------------------------------------------------------------------------------------
     monitor_proc : process is
     begin
-        wait until rising_edge(clk_s);
-        if (reset_n_s = '0') then
-            assert segments_ca_s = not EXPECTED_PATTERNS_c(0)
+        wait until rising_edge(clk_s); --! Wait for rising edge of clock
+        if (reset_n_s = '0') then --! Check if reset is active
+            assert segments_ca_s = not EXPECTED_PATTERNS_c(0) --! Check if common anode is correct
                 report "Reset state incorrect for common anode"
                 severity error;
                 
-            assert segments_cc_s = EXPECTED_PATTERNS_c(0)
+            assert segments_cc_s = EXPECTED_PATTERNS_c(0) --! Check if common cathode is correct
                 report "Reset state incorrect for common cathode"
                 severity error;
         end if;
